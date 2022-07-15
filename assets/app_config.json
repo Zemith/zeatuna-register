@@ -1,0 +1,16 @@
+{
+  "LineConf": {
+    "LiffId": "1657285861-7wv2y1JN",
+    "RedirectUri": "https://zeatunaessence.tspacedata.com"
+  },
+  "Consent": {
+    "Tenant": "TSpace",
+    "Location": "LineOA Zeatunaessence",
+    "EncryptKey": "1TTh@ib3v",
+    "AppCode": "0E4BF1A4-1839-4F1F-B288-EDAEB996858A",
+    "BaseURL": "https://oth1api.thaibevapp.com/thaibevconsentapi2/"
+  },
+  "Service": {
+    "BaseURL": "https://ai-services.tspace.tech/zeatuna"
+  }
+}
