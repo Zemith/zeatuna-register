@@ -7,6 +7,9 @@ import liff from '@line/liff';
 // Import jquery
 import $ from 'jquery';
 
+// Import custom alert
+import swal from 'sweetalert';
+
 import boundary_data from './assets/province.json';
 import app_config from './assets/app_config.json';
 
@@ -256,7 +259,17 @@ function submitForm(cid) {
     y_val != 'yyyy'
   ) {
     if (phone_val.length != 10) {
-      alert('กรุณากรอกเบอร์โทรให้ครบ 10 หลัก');
+      swal({
+        text: 'กรุณากรอกเบอร์โทรให้ครบ 10 หลัก',
+        icon: 'warning',
+        button: false,
+      });
+    } else if (postcode_val.length != 5) {
+      swal({
+        text: 'กรุณากรอกรหัสไปรษณีย์ให้ครบ 5 หลัก',
+        icon: 'warning',
+        button: false,
+      });
     } else {
       let json_data = {
         line_id: cid,
@@ -281,12 +294,13 @@ function submitForm(cid) {
         dataType: 'json',
         data: json_data,
         success: function (response) {
-          // alert('ขอบคุณที่ลงทะเบียนเข้าร่วมกิจกรรมกับเรา');
-          // liff.closeWindow();
           document.getElementById('content-body').innerHTML =
             '<h1 class="AlreadyRegister">' +
             '<img class="thank-you-image" src="https://raw.githubusercontent.com/illusionjew/stackblitz-liff-template/main/assets/images/Check-Icon.png" />' +
             '<br /><br /><b>ลงทะเบียนสำเร็จ</b><br />ขอบคุณที่ลงทะเบียนเข้าร่วมกิจกรรม<br />ZEA Tuna Essence</h1>';
+          setTimeout(() => {
+            liff.closeWindow();
+          }, 3000);
         },
         error: function (err) {
           console.log(err);
@@ -294,7 +308,11 @@ function submitForm(cid) {
       });
     }
   } else {
-    alert('กรุณากรอกข้อมูลในช่องที่มีเครื่องหมาย * ให้ครบถ้วน');
+    swal({
+      text: 'กรุณากรอกข้อมูลในช่อง\nที่มีเครื่องหมาย * ให้ครบถ้วน',
+      icon: 'warning',
+      button: false,
+    });
   }
 }
 
@@ -319,9 +337,13 @@ function fetchConsent(cid) {
         foundRegistration(cid);
       } else {
         div_content.innerHTML =
-          '<div class="container-md form-container"><div class="modal show-modal" tabindex="-1"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content" style="height: 90%"><div class="modal-body">' +
+          '<div class="container-md form-container"><div class="modal show-modal" tabindex="-1">' +
+          '<div class="modal-dialog modal-dialog-scrollable">' +
+          '<div class="modal-content" style="height: 90%">' +
+          '<div class="modal-body" id="ConsentBody">' +
           resp.content +
-          '<br><table class="table-consent"><tbody id="TableBodyConsent"></tbody></table></div><div id="FooterConsent" class="modal-footer modal-footer-style"></div></div></div></div>';
+          '<br><table class="table-consent"><tbody id="TableBodyConsent"></tbody></table>' +
+          '</div><div id="FooterConsent" class="modal-footer modal-footer-style"></div></div></div></div>';
 
         // for loop consent item append to table
         resp.consentList.forEach((item) => {
@@ -337,7 +359,7 @@ function fetchConsent(cid) {
               item.consentListId +
               '" value="ConsentId' +
               item.consentListId +
-              '" checked /><span class="slider round"></span></label></td></tr><tr><td></td></tr>';
+              '" checked /><span class="slider round"></span></label></td></tr><tr><td><br /></td></tr>';
             confm.innerHTML = confm.innerHTML + tag;
           } else {
             let tag =
@@ -349,7 +371,7 @@ function fetchConsent(cid) {
               item.consentListId +
               '" value="ConsentId' +
               item.consentListId +
-              '" /><span class="slider round"></span></label></td></tr><tr><td></td></tr>';
+              '" /><span class="slider round"></span></label></td></tr><tr><td><br /></td></tr>';
             confm.innerHTML = confm.innerHTML + tag;
           }
         });
@@ -360,7 +382,7 @@ function fetchConsent(cid) {
           '<div class="consentBtn"><button type="button" id="BtnRejectConsent">' +
           // resp.cancelText +
           'ปฏิเสธ' +
-          '</button></div><div class="consentBtn"><button type="button" id="BtnSaveConsent">' +
+          '</button></div><div class="consentBtn"><button type="button" id="BtnSaveConsent" disabled>' +
           // resp.submitText +
           'ยอมรับ' +
           '</button></div>';
@@ -380,6 +402,12 @@ function fetchConsent(cid) {
         };
         document.getElementById('BtnSaveConsent').onclick = () => {
           saveConsent(resp, tk);
+        };
+        document.getElementById('ConsentBody').onscroll = () => {
+          const cb = document.getElementById('ConsentBody');
+          if (cb.offsetHeight + cb.scrollTop + 65 >= cb.scrollHeight) {
+            enableSaveConsentBtn();
+          }
         };
       }
     }

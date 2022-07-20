@@ -109,7 +109,7 @@ tr {
 
 .show-modal {
   display: block;
-  margin-top: 30px;
+  margin-top: 65px;
 }
 
 .modal-footer-style {
@@ -196,4 +196,8 @@ input:checked + .slider:before {
   width: 20%;
   /* height: 20%; */
   margin-top: 60%;
+}
+
+.swal-modal .swal-text {
+  text-align: center;
 }
